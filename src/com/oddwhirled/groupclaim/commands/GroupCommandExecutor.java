@@ -6,6 +6,7 @@
 package com.oddwhirled.groupclaim.commands;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import org.bukkit.command.Command;
@@ -28,10 +29,12 @@ public class GroupCommandExecutor implements TabExecutor {
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 
+        //if the arg length is 1 then return the full set of commands available after "group"
         if (args.length == 1) {
             return new ArrayList<>(register.keySet());
-        } else if(args.length >= 1) {
-            return register.get(args[0]).onTabComplete(args);
+        } else if (args.length > 1) {
+            //otherwise get the command's special tab complete
+            return register.get(args[0]).onTabComplete(Arrays.copyOfRange(args, 1, args.length));
         } else {
             return null;
         }
@@ -52,10 +55,10 @@ public class GroupCommandExecutor implements TabExecutor {
             return true;
         } else {
             GroupCommand gcmd = register.get(args[0]);
-            if(gcmd == null) {
+            if (gcmd == null) {
                 return false;
             } else {
-                gcmd.run(p, args);
+                gcmd.run(p, Arrays.copyOfRange(args, 1, args.length));
                 return true;
             }
         }

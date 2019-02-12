@@ -6,8 +6,6 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
 import java.util.List;
 import org.bukkit.entity.Player;
 
@@ -15,22 +13,15 @@ import org.bukkit.entity.Player;
  *
  * @author Drew
  */
-public class CommandInfo extends GroupCommand {
+public class CommandChunkInfo extends GroupCommand {
 
-    public CommandInfo() {
-        super("info");
+    public CommandChunkInfo() {
+        super("chunkinfo");
     }
-    
+
     @Override
     public boolean run(Player p, String[] args) {
-        DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
-        String group = d.getGroup(p);
-        if(group == null) {
-            p.sendMessage(m.NOT_IN_GROUP);
-        } else {
-            p.sendMessage(String.format(m.GROUP_INFO, d.getGroupDisplayName(group), d.getGroupLeaderUUID(group)));
-        }
+        p.sendMessage(DataStore.instance().getGroup(p.getLocation().getChunk()));
         return true;
     }
 

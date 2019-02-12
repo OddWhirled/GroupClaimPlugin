@@ -200,7 +200,7 @@ public class ProtectionListener implements Listener {
 //    }
     @EventHandler
     public void onIgnite(BlockIgniteEvent e) {
-        if (GroupClaim.DEBUG) {
+        if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("BlockIgniteEvent Called");
         }
         if (e.getCause().equals(IgniteCause.LIGHTNING)) {
@@ -220,7 +220,7 @@ public class ProtectionListener implements Listener {
 
     @EventHandler
     public void onEntityExplosion(EntityExplodeEvent e) {
-        if (GroupClaim.DEBUG) {
+        if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("EntityExplodeEvent Called");
         }
         boolean perm;
@@ -262,28 +262,28 @@ public class ProtectionListener implements Listener {
     //Testing events
     @EventHandler
     public void onEvent(EntityTransformEvent e) {
-        if (GroupClaim.DEBUG) {
+        if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
         }
     }
 
     @EventHandler
     public void onEvent(ExplosionPrimeEvent e) {
-        if (GroupClaim.DEBUG) {
+        if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
         }
     }
 
     @EventHandler
     public void onEvent(EntitySpawnEvent e) {
-        if (GroupClaim.DEBUG) {
+        if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
         }
     }
 
     @EventHandler
     public void onEvent(EntityChangeBlockEvent e) {
-        if (GroupClaim.DEBUG) {
+        if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("EntityChangeBlockEvent Called");
         }
     }

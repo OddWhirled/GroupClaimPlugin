@@ -71,41 +71,39 @@ public class DataStore {
             return false;
         }
         if (!groupInfoCache.containsKey(name)) {
-            groupInfoCache.put(name, getGroupInfoFromFile(name));
+            groupInfoCache.put(name, fileGetGroupInfo(name));
         }
         if (groupInfoCache.get(name) == null) {
             GroupInfo g = new GroupInfo(displayName, leader.getUniqueId());
             groupInfoCache.put(name, g);
-            saveGroupInfoToFile(g, name);
+            fileUpdateGroupInfo(g, name);
             return true;
         }
         return false;
     }
 
-    //TODO: bigass method to remove all the players in this group :(
     public void removeGroup(String group) {
         if (group == null) {
             return;
         }
         group = group.toLowerCase();
-        GroupInfo g = groupInfoCache.get(group);
         groupInfoCache.remove(group);
+        //temporary, might be more efficient later
+        playerCache.clear();
+        chunkCache.clear();
+        fileRemoveGroup(group);
     }
 
-    //returns if claim was created (false if already claimed)
+    //returns if claim was created (false if already claimed or player not in group)
     public boolean addClaim(String group, Chunk chunk) {
         if (group == null) {
             return false;
         }
         group = group.toLowerCase();
-        //if the chunk isn't cached we cache it for fast access since it will
-        //most likely be edited soon
-        if (!chunkCache.containsKey(chunk)) {
-            chunkCache.put(chunk, getChunkGroupFromFile(chunk.getX(), chunk.getZ()));
-        }
-        if (chunkCache.get(chunk) == null) {
+        
+        if (getGroup(chunk) == null) {
             chunkCache.put(chunk, group);
-            saveChunkGroupToFile(chunk, group);
+            fileUpdateChunkGroup(chunk, group);
             return true;
         }
         return false;
@@ -113,26 +111,26 @@ public class DataStore {
 
     public void removeClaim(Chunk chunk) {
         chunkCache.put(chunk, null);
-        saveChunkGroupToFile(chunk, null);
+        fileUpdateChunkGroup(chunk, null);
     }
 
     public String getGroup(Chunk chunk) {
         if (!chunkCache.containsKey(chunk)) {
-            chunkCache.put(chunk, getChunkGroupFromFile(chunk.getX(), chunk.getZ()));
+            chunkCache.put(chunk, fileGetChunkGroup(chunk.getX(), chunk.getZ()));
         }
         return chunkCache.get(chunk);
     }
 
     public String getGroup(Player p) {
         if (!playerCache.containsKey(p)) {
-            playerCache.put(p, getPlayerGroupFromFile(p.getUniqueId()));
+            playerCache.put(p, fileGetPlayerGroup(p.getUniqueId()));
         }
         return playerCache.get(p);
     }
 
     private GroupInfo getGroupInfo(String name) {
         if (!groupInfoCache.containsKey(name)) {
-            groupInfoCache.put(name, getGroupInfoFromFile(name));
+            groupInfoCache.put(name, fileGetGroupInfo(name));
         }
         return groupInfoCache.get(name);
     }
@@ -144,7 +142,7 @@ public class DataStore {
         }
         group = group.toLowerCase();
         if (!groupInfoCache.containsKey(group)) {
-            groupInfoCache.put(group, getGroupInfoFromFile(group));
+            groupInfoCache.put(group, fileGetGroupInfo(group));
         }
         return groupInfoCache.get(group).leader;
     }
@@ -160,7 +158,7 @@ public class DataStore {
         }
         group = group.toLowerCase();
         if (!groupInfoCache.containsKey(group)) {
-            groupInfoCache.put(group, getGroupInfoFromFile(group));
+            groupInfoCache.put(group, fileGetGroupInfo(group));
         }
         return groupInfoCache.get(group).displayName;
     }
@@ -169,7 +167,9 @@ public class DataStore {
     public boolean setGroupLeader(Player p) {
         String group = getGroup(p);
         if (group != null) {
-            groupInfoCache.get(group).leader = p.getUniqueId();
+            GroupInfo g = groupInfoCache.get(group);
+            g.leader = p.getUniqueId();
+            fileUpdateGroupInfo(g, group);
             return true;
         }
         return false;
@@ -179,7 +179,7 @@ public class DataStore {
     public boolean joinGroup(Player p, String group) {
         if (getGroup(p) == null) {
             playerCache.put(p, group);
-            savePlayerGroupToFile(p, group);
+            fileUpdatePlayerGroup(p, group);
             return true;
         }
         return false;
@@ -189,7 +189,7 @@ public class DataStore {
     public boolean leaveGroup(Player p) {
         if (!isLeader(p)) {
             playerCache.put(p, null);
-            savePlayerGroupToFile(p, null);
+            fileUpdatePlayerGroup(p, null);
             return true;
         }
         return false;
@@ -220,7 +220,7 @@ public class DataStore {
     private HashMap<String, GroupInfo> groupSave = new HashMap<>();
 
     //load
-    private String getChunkGroupFromFile(int x, int z) {
+    private String fileGetChunkGroup(int x, int z) {
         for (SimpleChunk sc : chunkSave.keySet()) {
             if (sc.x == x && sc.z == z) {
                 return chunkSave.get(sc);
@@ -229,7 +229,7 @@ public class DataStore {
         return null;
     }
 
-    private GroupInfo getGroupInfoFromFile(String name) {
+    private GroupInfo fileGetGroupInfo(String name) {
 //        for (String s : groupSave.keySet()) {
 //            if (s.equals(name)) {
         return groupSave.get(name);
@@ -237,7 +237,7 @@ public class DataStore {
 //        }
     }
 
-    private String getPlayerGroupFromFile(UUID uuid) {
+    private String fileGetPlayerGroup(UUID uuid) {
 //        for (UUID u : playerSave.keySet()) {
 //            if (uuid.equals(u)) {
         return playerSave.get(uuid);
@@ -247,28 +247,66 @@ public class DataStore {
     }
 
     //save
-    private void saveChunkGroupToFile(Chunk c, String group) {
+    private void fileUpdateChunkGroup(Chunk c, String group) {
         if (group != null) {
             group = group.toLowerCase();
+        } else {
+            fileRemoveChunk(c);
+            return;
         }
         SimpleChunk sc = new SimpleChunk(c.getX(), c.getZ());
         chunkSave.put(sc, group);
     }
 
-    private void saveGroupInfoToFile(GroupInfo g, String name) {
+    private void fileRemoveChunk(Chunk c) {
+        int x = c.getX();
+        int z = c.getZ();
+        for (SimpleChunk sc : chunkSave.keySet()) {
+            if (sc.x == x && sc.z == z) {
+                chunkSave.remove(sc);
+            }
+        }
+    }
+
+    private void fileUpdateGroupInfo(GroupInfo g, String name) {
         if (name != null) {
             name = name.toLowerCase();
+        } else {
+            fileRemoveGroup(name);
+            return;
         }
         GroupInfo sg = new GroupInfo(name, g.leader);
         groupSave.put(name, sg);
     }
 
-    private void savePlayerGroupToFile(Player p, String group) {
+    private void fileRemoveGroup(String group) {
+        groupSave.remove(group);
+        while (playerSave.containsValue(group)) {
+            playerSave.values().remove(group);
+        }
+        while (chunkSave.containsValue(group)) {
+            chunkSave.values().remove(group);
+        }
+    }
+
+    private void fileUpdatePlayerGroup(Player p, String group) {
         if (group != null) {
             group = group.toLowerCase();
+        } else {
+            fileRemovePlayer(p);
+            return;
         }
         UUID uuid = p.getUniqueId();
         playerSave.put(uuid, group);
+    }
+
+    private void fileRemovePlayer(Player p) {
+        UUID uuid = p.getUniqueId();
+        for(UUID u : playerSave.keySet()) {
+            if(uuid.equals(u)) {
+                playerSave.remove(u);
+            }
+        }
     }
 //</editor-fold>
 }

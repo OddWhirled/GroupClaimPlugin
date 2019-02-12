@@ -11,7 +11,7 @@ package com.oddwhirled.groupclaim;
  */
 public class Messages {
     
-    private final GroupClaim plugin = GroupClaim.instance();
+    private final GroupClaimPlugin plugin = GroupClaimPlugin.instance();
     
     public final String ALREADY_IN_GROUP = plugin.getConfig().getString("messageAlreadyInGroup");
     public final String NOT_IN_GROUP = plugin.getConfig().getString("messageNotInGroup");
@@ -20,6 +20,7 @@ public class Messages {
     public final String UNCLAIMED_CHUNK =  plugin.getConfig().getString("messageUnclaimedChunk");
     public final String LEFT_GROUP =  plugin.getConfig().getString("messageLeftGroup");
     public final String INVITED_PLAYER =  plugin.getConfig().getString("messageInvitedPlayer");
+    public final String CONFIRM_DISBAND = plugin.getConfig().getString("messageConfirmDisband");
     public final String DISBANDED_GROUP =  plugin.getConfig().getString("messageDisbandedGroup");
     public final String KICKED_PLAYER =  plugin.getConfig().getString("messageKickedPlayer");
     public final String SET_OWNER =  plugin.getConfig().getString("messageSetOwner");

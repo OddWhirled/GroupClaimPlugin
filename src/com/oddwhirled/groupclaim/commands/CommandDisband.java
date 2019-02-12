@@ -15,10 +15,10 @@ import org.bukkit.entity.Player;
  *
  * @author Drew
  */
-public class CommandLeave extends GroupCommand {
+public class CommandDisband extends GroupCommand {
 
-    public CommandLeave() {
-        super("leave");
+    public CommandDisband() {
+        super("disband");
     }
 
     @Override
@@ -28,18 +28,20 @@ public class CommandLeave extends GroupCommand {
         String group = d.getGroup(p);
         if (group == null) {
             p.sendMessage(m.NOT_IN_GROUP);
-        } else if (d.isLeader(p)) {
-            p.sendMessage(m.LEADER_CANT_LEAVE);
+        } else if (!d.isLeader(p)) {
+            p.sendMessage(m.NOT_LEADER);
+        } else if (args.length < 1 || !args[0].equals("confirm")) {
+            p.sendMessage(m.CONFIRM_DISBAND);
         } else {
-            d.leaveGroup(p);
-            p.sendMessage(String.format(m.LEFT_GROUP, d.getGroupDisplayName(group)));
+            p.sendMessage(String.format(m.DISBANDED_GROUP, d.getGroupDisplayName(group)));
+            d.removeGroup(group);
         }
         return true;
     }
 
     @Override
     public List<String> onTabComplete(String[] args) {
+        //Don't tab complete "confirm" for safety purposes
         return null;
     }
-
 }

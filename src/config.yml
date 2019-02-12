@@ -1,4 +1,5 @@
-#If a string has a % variable in it, it is very important to keep it in the string.
+#If a string has a % variable in it, it is very important to keep it in the string
+# however you may move it around as you like.
 messageAlreadyInGroup: "You are already in a group"
 messageNotInGroup: "You are not in a group"
 messageJoinedGroup: "Joined the group %s"
@@ -6,7 +7,8 @@ messageClaimedChunk: "Claimed this chunk for %s"
 messageUnclaimedChunk: "Unclaimed this chunk for %s"
 messageLeftGroup: "Left the group %s"
 messageInvitedPlayer: "Invited %s to join your group"
-messageDisbandedGroup: "Disbanded group %s"
+messageDisbandedGroup: "Disbanded the group %s"
+messageConfirmDisband: "Are you sure you want to disband? Type /group disband confirm"
 messageKickedPlayer: "Kicked %s from your group"
 messageSetOwner: "Set %s as the new owner of %s"
 messageCreatedGroup: "Group %s created"

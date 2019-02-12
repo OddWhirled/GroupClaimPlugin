@@ -18,6 +18,8 @@ public class CacheListener implements Listener {
     
     private DataStore data = DataStore.instance();
     
+    //With this method we would only cache up to the amount of loaded chunks
+    //which are already in memory anyway
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent e) {
         data.unCache(e.getChunk());

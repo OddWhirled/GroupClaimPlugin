@@ -13,9 +13,9 @@ import org.bukkit.plugin.java.JavaPlugin;
  *
  * @author Drew
  */
-public class GroupClaim extends JavaPlugin {
+public class GroupClaimPlugin extends JavaPlugin {
     
-    private static GroupClaim instance;
+    private static GroupClaimPlugin instance;
     public static Messages messages;
     
     public static final boolean DEBUG = true;
@@ -34,6 +34,9 @@ public class GroupClaim extends JavaPlugin {
         new CommandCreate().register();
         new CommandInfo().register();
         new CommandLeave().register();
+        new CommandDisband().register();
+        new CommandClaim().register();
+        new CommandChunkInfo().register();
     }
 
     @Override
@@ -41,7 +44,7 @@ public class GroupClaim extends JavaPlugin {
 
     }
     
-    public static GroupClaim instance() {
+    public static GroupClaimPlugin instance() {
         return instance;
     }
 }

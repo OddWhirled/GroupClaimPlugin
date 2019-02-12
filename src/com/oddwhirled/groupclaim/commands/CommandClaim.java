@@ -15,10 +15,10 @@ import org.bukkit.entity.Player;
  *
  * @author Drew
  */
-public class CommandLeave extends GroupCommand {
+public class CommandClaim extends GroupCommand {
 
-    public CommandLeave() {
-        super("leave");
+    public CommandClaim() {
+        super("claim");
     }
 
     @Override
@@ -26,13 +26,15 @@ public class CommandLeave extends GroupCommand {
         DataStore d = DataStore.instance();
         Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
-        if (group == null) {
+        if(group == null) {
             p.sendMessage(m.NOT_IN_GROUP);
-        } else if (d.isLeader(p)) {
-            p.sendMessage(m.LEADER_CANT_LEAVE);
         } else {
-            d.leaveGroup(p);
-            p.sendMessage(String.format(m.LEFT_GROUP, d.getGroupDisplayName(group)));
+            boolean claimed = d.addClaim(group, p.getLocation().getChunk());
+            if(claimed) {
+                p.sendMessage(m.CHUNK_ALREADY_CLAIMED);
+            } else {
+                p.sendMessage(String.format(m.CLAIMED_CHUNK, d.getGroupDisplayName(group)));
+            }
         }
         return true;
     }
@@ -41,5 +43,5 @@ public class CommandLeave extends GroupCommand {
     public List<String> onTabComplete(String[] args) {
         return null;
     }
-
+    
 }
