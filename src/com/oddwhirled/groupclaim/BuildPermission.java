@@ -14,7 +14,6 @@ import org.bukkit.entity.Monster;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.TNTPrimed;
-import org.bukkit.entity.minecart.ExplosiveMinecart;
 import org.bukkit.projectiles.BlockProjectileSource;
 import org.bukkit.projectiles.ProjectileSource;
 
@@ -81,9 +80,9 @@ public class BuildPermission {
             //TODO: check if source is null and see where this came from using metadata
         }
 
-        if (et.equals(EntityType.MINECART_TNT) || et.equals(EntityType.ENDER_CRYSTAL)) {
-            return BuildPermission.getGroup(e.getLocation());
-        }
+//        if (et.equals(EntityType.MINECART_TNT) || et.equals(EntityType.ENDER_CRYSTAL)) {
+//            return BuildPermission.getGroup(e.getLocation());
+//        }
         return BuildPermission.getGroup(e.getLocation());
     }
 

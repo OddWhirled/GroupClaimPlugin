@@ -5,6 +5,7 @@
  */
 package com.oddwhirled.groupclaim;
 
+import com.oddwhirled.groupclaim.commands.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,13 +16,24 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class GroupClaim extends JavaPlugin {
     
     private static GroupClaim instance;
+    public static Messages messages;
+    
+    public static final boolean DEBUG = true;
 
     @Override
     public void onEnable() {
-        getCommand("group").setExecutor(new GroupCommands());
+        getCommand("group").setExecutor(new GroupCommandExecutor());
         PluginManager plm = getServer().getPluginManager();
         plm.registerEvents(new ProtectionListener(), this);
+        plm.registerEvents(new CacheListener(), this);
+        
+        this.saveDefaultConfig();
         instance = this;
+        messages = new Messages();
+        
+        new CommandCreate().register();
+        new CommandInfo().register();
+        new CommandLeave().register();
     }
 
     @Override

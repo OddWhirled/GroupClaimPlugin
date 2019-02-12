@@ -5,12 +5,12 @@
  */
 package com.oddwhirled.groupclaim;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -20,16 +20,17 @@ import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityPlaceEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
+import org.bukkit.event.entity.EntityTransformEvent;
+import org.bukkit.event.entity.ExplosionPrimeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -114,8 +115,21 @@ public class ProtectionListener implements Listener {
         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
             Material m = e.getItem().getType();
             if (m.equals(Material.ARMOR_STAND) || m.equals(Material.END_CRYSTAL) || m.equals(Material.TNT_MINECART)) {
-                Location loc = e.getClickedBlock().getRelative(e.getBlockFace()).getLocation();
+                Location loc = null;
+                switch (m) {
+                    case ARMOR_STAND:
+                        loc = e.getClickedBlock().getRelative(e.getBlockFace()).getLocation();
+                        break;
+                    case END_CRYSTAL:
+                        loc = e.getClickedBlock().getRelative(BlockFace.UP).getLocation();
+                        break;
+                    case TNT_MINECART:
+                        loc = e.getClickedBlock().getLocation();
+                        break;
+                    default:
+                        break;
 
+                }
                 boolean perm = BuildPermission.checkBuildPermissions(e.getPlayer(), loc);
                 if (!perm) {
                     e.setCancelled(true);
@@ -178,31 +192,38 @@ public class ProtectionListener implements Listener {
 //    public void onExplosion() {
 //
 //    }
-    @EventHandler
-    public void onTridentLightning(ProjectileHitEvent e) {
-        if (e.getEntity().getType().equals(EntityType.TRIDENT)) {
-            e.get
-        }
-    }
-
+//    @EventHandler
+//    public void onTridentLightning(ProjectileHitEvent e) {
+//        if (e.getEntity().getType().equals(EntityType.TRIDENT)) {
+//            e.get
+//        }
+//    }
     @EventHandler
     public void onIgnite(BlockIgniteEvent e) {
+        if (GroupClaim.DEBUG) {
+            Bukkit.getServer().broadcastMessage("BlockIgniteEvent Called");
+        }
         if (e.getCause().equals(IgniteCause.LIGHTNING)) {
-                e.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onLightningStrike(LightningStrikeEvent e) {
-        if (e.getCause().equals(LightningStrikeEvent.Cause.TRIDENT)) {
-            e.getLightning().getLocation().getBlock();
+        if (e.getCause().equals(LightningStrikeEvent.Cause.TRIDENT) && !e.isCancelled()) {
+            Block b = e.getLightning().getLocation().getBlock();
+            if (b.getType().equals(Material.AIR)) {
+                b.setType(Material.FIRE);
+            }
         }
     }
 
     @EventHandler
     public void onEntityExplosion(EntityExplodeEvent e) {
-
-        boolean perm = true;
+        if (GroupClaim.DEBUG) {
+            Bukkit.getServer().broadcastMessage("EntityExplodeEvent Called");
+        }
+        boolean perm;
         for (Block b : e.blockList()) {
             if (BuildPermission.getGroup(b) != null) {
                 perm = BuildPermission.checkBuildPermissions(e.getEntity(), b.getLocation());
@@ -237,4 +258,51 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
+
+    //Testing events
+    @EventHandler
+    public void onEvent(EntityTransformEvent e) {
+        if (GroupClaim.DEBUG) {
+            Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
+        }
+    }
+
+    @EventHandler
+    public void onEvent(ExplosionPrimeEvent e) {
+        if (GroupClaim.DEBUG) {
+            Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
+        }
+    }
+
+    @EventHandler
+    public void onEvent(EntitySpawnEvent e) {
+        if (GroupClaim.DEBUG) {
+            Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
+        }
+    }
+
+    @EventHandler
+    public void onEvent(EntityChangeBlockEvent e) {
+        if (GroupClaim.DEBUG) {
+            Bukkit.getServer().broadcastMessage("EntityChangeBlockEvent Called");
+        }
+    }
+//
+
+    @EventHandler
+    public void onEvent(BlockRedstoneEvent e) {
+        if (e.getBlock().getType().equals(Material.TNT)) {
+            Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
+        }
+    }
+//
+//    @EventHandler
+//    public void onEvent(EntityTransformEvent e) {
+//        Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
+//    }
+//
+//    @EventHandler
+//    public void onEvent(EntityTransformEvent e) {
+//        Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
+//    }
 }
