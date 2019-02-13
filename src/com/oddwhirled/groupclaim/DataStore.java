@@ -116,7 +116,7 @@ public class DataStore {
         }
         group = group.toLowerCase();
         groupInfoCache.remove(group);
-        //temporary, might be more efficient later
+        //@temporary, might be more efficient later
         playerCache.clear();
         chunkCache.clear();
         fileRemoveGroup(group);
@@ -250,7 +250,7 @@ public class DataStore {
      */
     public UUID getGroupLeaderUUID(String group) {
         GroupInfo g = getGroupInfo(group);
-        if (g != null) {
+        if (g == null) {
             return null;
         }
         return g.leader;

@@ -8,6 +8,7 @@ messages:
     chunkClaimed: "Claimed this chunk for %s"
     chunkUnclaimed: "Unclaimed this chunk for %s"
     chunkAlreadyClaimed: "This chunk is already claimed"
+    groupAlreadyExists: "This group already exists"
     playerInvited: "Invited %s to join your group"
     playerKicked: "Kicked %s from your group"
     groupDisbanded: "Disbanded the group %s"

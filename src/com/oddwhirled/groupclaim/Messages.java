@@ -32,7 +32,7 @@ public class Messages {
         String message = messages.get(key);
         try {
             message = String.format(message, args);
-        } catch (IllegalFormatException e) {
+        } catch (Exception e) {
             message = ChatColor.RED + "Plugin could not find a message for this action";
         }
         return message;

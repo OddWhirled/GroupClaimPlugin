@@ -22,7 +22,7 @@ public class CommandCreate extends GroupCommand {
 
     @Override
     public boolean run(Player p, String... args) {
-        if(args.length < 1) {
+        if (args.length < 1) {
             return false;
         }
         DataStore d = DataStore.instance();
@@ -30,8 +30,12 @@ public class CommandCreate extends GroupCommand {
         if (group != null) {
             p.sendMessage(msg("alreadyInGroup"));
         } else {
-            d.addGroup(args[0], p);
-            p.sendMessage(msg("groupCreated", args[0]));
+            boolean free = d.addGroup(args[0], p);
+            if (!free) {
+                p.sendMessage(msg("groupCreated", args[0]));
+            } else {
+                p.sendMessage(msg("groupAlreadyExists"));
+            }
         }
         return true;
     }

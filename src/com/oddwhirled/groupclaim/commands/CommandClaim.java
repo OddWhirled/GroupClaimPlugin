@@ -27,11 +27,11 @@ public class CommandClaim extends GroupCommand {
         if(group == null) {
             p.sendMessage(msg("notInGroup"));
         } else {
-            boolean unclaimed = d.addClaim(group, p.getLocation().getChunk());
-            if(!unclaimed) {
+            boolean free = d.addClaim(group, p.getLocation().getChunk());
+            if(!free) {
                 p.sendMessage(msg("chunkAlreadyClaimed"));
             } else {
-                p.sendMessage(msg("claimedChunk", d.getGroupDisplayName(group)));
+                p.sendMessage(msg("chunkClaimed", d.getGroupDisplayName(group)));
             }
         }
         return true;
