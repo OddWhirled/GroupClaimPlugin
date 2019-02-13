@@ -8,33 +8,40 @@ package com.oddwhirled.groupclaim.commands;
 import com.oddwhirled.groupclaim.DataStore;
 import com.oddwhirled.groupclaim.GroupClaimPlugin;
 import com.oddwhirled.groupclaim.Messages;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
  *
  * @author Drew
  */
-public class CommandClaim extends GroupCommand {
+public class CommandInvite extends GroupCommand {
 
-    public CommandClaim() {
-        super("claim");
+    public CommandInvite() {
+        super("invite");
     }
 
     @Override
     public boolean run(Player p, String... args) {
+        if(args.length < 1) {
+            return false;
+        }
         DataStore d = DataStore.instance();
         Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
-        if(group == null) {
+        if (group == null) {
             p.sendMessage(m.NOT_IN_GROUP);
+        } else if (!d.isLeader(p)) {
+            p.sendMessage(m.NOT_LEADER);
         } else {
-            boolean unclaimed = d.addClaim(group, p.getLocation().getChunk());
-            if(!unclaimed) {
-                p.sendMessage(m.CHUNK_ALREADY_CLAIMED);
+            Player invite = Bukkit.getPlayer(args[0]);
+            if(invite == null) {
+                p.sendMessage(m.COULDNT_FIND_PLAYER);
             } else {
-                p.sendMessage(String.format(m.CLAIMED_CHUNK, d.getGroupDisplayName(group)));
+                d.addInvite(invite, group);
+                p.sendMessage(String.format(m.INVITED_PLAYER, invite.getName()));
             }
         }
         return true;
-    }    
+    }
 }

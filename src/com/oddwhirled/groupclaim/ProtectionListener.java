@@ -225,7 +225,7 @@ public class ProtectionListener implements Listener {
         }
         boolean perm;
         for (Block b : e.blockList()) {
-            if (BuildPermission.getGroup(b) != null) {
+            if (BuildPermission.determineGroup(b) != null) {
                 perm = BuildPermission.checkBuildPermissions(e.getEntity(), b.getLocation());
                 if (!perm) {
                     e.setCancelled(true);
@@ -288,13 +288,6 @@ public class ProtectionListener implements Listener {
         }
     }
 //
-
-    @EventHandler
-    public void onEvent(BlockRedstoneEvent e) {
-        if (e.getBlock().getType().equals(Material.TNT)) {
-            Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
-        }
-    }
 //
 //    @EventHandler
 //    public void onEvent(EntityTransformEvent e) {

@@ -27,66 +27,66 @@ public class BuildPermission {
 
     public static boolean checkBuildPermissions(Entity e, Location loc) {
         //if the location in question isn't owned always allow
-        if (BuildPermission.getGroup(loc) == null) {
+        if (BuildPermission.determineGroup(loc) == null) {
             return true;
         }
         //otherwise check if the group of the source and destination are the same
-        return BuildPermission.getGroup(loc).equals(getGroup(e));
+        return BuildPermission.determineGroup(loc).equals(BuildPermission.determineGroup(e));
     }
 
     public static boolean checkBuildPermissions(Block b, Location loc) {
         //if the location in question isn't owned always allow
-        if (BuildPermission.getGroup(loc) == null) {
+        if (BuildPermission.determineGroup(loc) == null) {
             return true;
         }
         //otherwise check if the group of the source and destination are the same
-        return BuildPermission.getGroup(loc).equals(BuildPermission.getGroup(b));
+        return BuildPermission.determineGroup(loc).equals(BuildPermission.determineGroup(b));
     }
 
-    public static String getGroup(Location loc) {
+    public static String determineGroup(Location loc) {
         return data.getGroup(loc.getChunk());
     }
 
-    public static String getGroup(Block b) {
+    public static String determineGroup(Block b) {
         return data.getGroup(b.getChunk());
     }
 
-    public static String getGroup(Entity e) {
+    public static String determineGroup(Player p) {
+        return data.getGroup(p);
+    }
+
+    public static String determineGroup(Entity e) {
 
         if (e == null) {
             return null;
         }
 
         if (e instanceof Player) {
-            return BuildPermission.getGroup((Player) e);
+            return BuildPermission.determineGroup((Player) e);
         }
 
         if (e instanceof Monster) {
-            return getGroup(((Mob) e).getTarget());
+            return BuildPermission.determineGroup(((Mob) e).getTarget());
         }
 
         if (e instanceof Projectile) {
             ProjectileSource ps = ((Projectile) e).getShooter();
             if (ps instanceof BlockProjectileSource) {
-                return BuildPermission.getGroup(((BlockProjectileSource) ps).getBlock());
+                return BuildPermission.determineGroup(((BlockProjectileSource) ps).getBlock());
             } else {
-                return getGroup((Entity) ps);
+                return BuildPermission.determineGroup((Entity) ps);
             }
         }
 
         EntityType et = e.getType();
         if (et.equals(EntityType.PRIMED_TNT)) {
-            return getGroup(((TNTPrimed) e).getSource());
+            return BuildPermission.determineGroup(((TNTPrimed) e).getSource());
             //TODO: check if source is null and see where this came from using metadata
         }
 
 //        if (et.equals(EntityType.MINECART_TNT) || et.equals(EntityType.ENDER_CRYSTAL)) {
 //            return BuildPermission.getGroup(e.getLocation());
 //        }
-        return BuildPermission.getGroup(e.getLocation());
-    }
-
-    public static String getGroup(Player p) {
-        return data.getGroup(p);
+        return BuildPermission.determineGroup(e.getLocation());
     }
 }

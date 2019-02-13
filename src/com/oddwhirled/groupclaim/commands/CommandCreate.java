@@ -8,7 +8,6 @@ package com.oddwhirled.groupclaim.commands;
 import com.oddwhirled.groupclaim.DataStore;
 import com.oddwhirled.groupclaim.GroupClaimPlugin;
 import com.oddwhirled.groupclaim.Messages;
-import java.util.List;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,7 +21,7 @@ public class CommandCreate extends GroupCommand {
     }
 
     @Override
-    public boolean run(Player p, String[] args) {
+    public boolean run(Player p, String... args) {
         if(args.length < 1) {
             return false;
         }
@@ -37,10 +36,4 @@ public class CommandCreate extends GroupCommand {
         }
         return true;
     }
-
-    @Override
-    public List<String> onTabComplete(String[] args) {
-        return null;
-    }
-
 }

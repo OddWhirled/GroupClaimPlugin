@@ -5,7 +5,6 @@
  */
 package com.oddwhirled.groupclaim.commands;
 
-import java.util.List;
 import org.bukkit.entity.Player;
 
 /**
@@ -19,13 +18,7 @@ public class CommandKick extends GroupCommand {
     }
 
     @Override
-    public boolean run(Player p, String[] args) {
+    public boolean run(Player p, String... args) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
-    @Override
-    public List<String> onTabComplete(String[] args) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-    
 }

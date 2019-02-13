@@ -13,6 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
+import org.bukkit.util.StringUtil;
 
 /**
  *
@@ -28,13 +29,21 @@ public class GroupCommandExecutor implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-
+        sender.sendMessage(Arrays.toString(args));
         //if the arg length is 1 then return the full set of commands available after "group"
         if (args.length == 1) {
-            return new ArrayList<>(register.keySet());
+            List<String> suggestions = new ArrayList<>();
+            StringUtil.copyPartialMatches(args[0], register.keySet(), suggestions);
+            return suggestions;
+            
         } else if (args.length > 1) {
-            //otherwise get the command's special tab complete
-            return register.get(args[0]).onTabComplete(Arrays.copyOfRange(args, 1, args.length));
+            GroupCommand gcmd = register.get(args[0]);
+            if (gcmd == null) {
+                return null;
+            } else {
+                String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
+                return gcmd.onTabComplete(newArgs);
+            }
         } else {
             return null;
         }
@@ -50,16 +59,17 @@ public class GroupCommandExecutor implements TabExecutor {
 
         Player p = (Player) sender;
 
+        //plain /group is an alias for /group info
         if (args.length < 1) {
-            register.get("info").run(p, args);
-            return true;
+            return register.get("info").run(p, args);
+
         } else {
             GroupCommand gcmd = register.get(args[0]);
             if (gcmd == null) {
                 return false;
             } else {
-                gcmd.run(p, Arrays.copyOfRange(args, 1, args.length));
-                return true;
+                String[] newArgs = Arrays.copyOfRange(args, 1, args.length);
+                return gcmd.run(p, newArgs);
             }
         }
     }

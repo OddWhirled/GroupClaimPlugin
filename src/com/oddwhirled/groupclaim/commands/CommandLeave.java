@@ -8,7 +8,6 @@ package com.oddwhirled.groupclaim.commands;
 import com.oddwhirled.groupclaim.DataStore;
 import com.oddwhirled.groupclaim.GroupClaimPlugin;
 import com.oddwhirled.groupclaim.Messages;
-import java.util.List;
 import org.bukkit.entity.Player;
 
 /**
@@ -22,7 +21,7 @@ public class CommandLeave extends GroupCommand {
     }
 
     @Override
-    public boolean run(Player p, String[] args) {
+    public boolean run(Player p, String... args) {
         DataStore d = DataStore.instance();
         Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
@@ -35,11 +34,6 @@ public class CommandLeave extends GroupCommand {
             p.sendMessage(String.format(m.LEFT_GROUP, d.getGroupDisplayName(group)));
         }
         return true;
-    }
-
-    @Override
-    public List<String> onTabComplete(String[] args) {
-        return null;
     }
 
 }

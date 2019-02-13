@@ -20,14 +20,8 @@ public class CommandChunkInfo extends GroupCommand {
     }
 
     @Override
-    public boolean run(Player p, String[] args) {
+    public boolean run(Player p, String... args) {
         p.sendMessage(DataStore.instance().getGroup(p.getLocation().getChunk()));
         return true;
     }
-
-    @Override
-    public List<String> onTabComplete(String[] args) {
-        return null;
-    }
-    
 }

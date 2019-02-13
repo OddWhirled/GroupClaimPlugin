@@ -24,7 +24,9 @@ public abstract class GroupCommand {
         GroupCommandExecutor.register(name, this);
     }
 
-    public abstract boolean run(Player p, String[] args);
-
-    public abstract List<String> onTabComplete(String[] args);
+    public List<String> onTabComplete(String... args) {
+        return null;
+    }
+    
+    public abstract boolean run(Player p, String... args);
 }

@@ -18,7 +18,7 @@ public class GroupClaimPlugin extends JavaPlugin {
     private static GroupClaimPlugin instance;
     public static Messages messages;
     
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     @Override
     public void onEnable() {
