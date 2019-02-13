@@ -6,9 +6,9 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
 import org.bukkit.entity.Player;
+
+import static com.oddwhirled.groupclaim.Messages.msg;
 
 /**
  *
@@ -26,13 +26,12 @@ public class CommandCreate extends GroupCommand {
             return false;
         }
         DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
         if (group != null) {
-            p.sendMessage(m.ALREADY_IN_GROUP);
+            p.sendMessage(msg("alreadyInGroup"));
         } else {
             d.addGroup(args[0], p);
-            p.sendMessage(String.format(m.CREATED_GROUP, args[0]));
+            p.sendMessage(msg("groupCreated", args[0]));
         }
         return true;
     }

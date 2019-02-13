@@ -6,11 +6,9 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import static com.oddwhirled.groupclaim.Messages.msg;
 /**
  *
  * @author Drew
@@ -24,17 +22,16 @@ public class CommandAccept extends GroupCommand {
     @Override
     public boolean run(Player p, String... args) {
         DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
         if (group != null) {
-            p.sendMessage(m.ALREADY_IN_GROUP);
+            p.sendMessage(msg("notInGroup"));
         } else {
             String groupInvite = d.clearInvite(p);
             if (groupInvite == null) {
-                p.sendMessage(m.NOT_INVITED);
+                p.sendMessage(msg("noInvite"));
             } else {
                 d.joinGroup(p, groupInvite);
-                p.sendMessage(String.format(m.JOINED_GROUP, d.getGroupDisplayName(groupInvite)));
+                p.sendMessage(msg("joinedGroup", d.getGroupDisplayName(groupInvite)));
             }
         }
         return true;

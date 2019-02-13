@@ -6,10 +6,9 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
 import org.bukkit.entity.Player;
 
+import static com.oddwhirled.groupclaim.Messages.msg;
 /**
  *
  * @author Drew
@@ -23,12 +22,11 @@ public class CommandInfo extends GroupCommand {
     @Override
     public boolean run(Player p, String... args) {
         DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
         if(group == null) {
-            p.sendMessage(m.NOT_IN_GROUP);
+            p.sendMessage(msg("notInGroup"));
         } else {
-            p.sendMessage(String.format(m.GROUP_INFO, d.getGroupDisplayName(group), d.getGroupLeaderUUID(group)));
+            p.sendMessage(msg("groupInfo", d.getGroupDisplayName(group), d.getGroupLeaderUUID(group)));
         }
         return true;
     }

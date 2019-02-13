@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.oddwhirled.groupclaim.commands;
+package com.oddwhirled.groupclaim;
 
+import com.oddwhirled.groupclaim.commands.GroupCommand;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;

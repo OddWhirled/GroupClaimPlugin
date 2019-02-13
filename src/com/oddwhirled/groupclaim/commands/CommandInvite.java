@@ -6,10 +6,10 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import static com.oddwhirled.groupclaim.Messages.msg;
 
 /**
  *
@@ -27,19 +27,18 @@ public class CommandInvite extends GroupCommand {
             return false;
         }
         DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
         if (group == null) {
-            p.sendMessage(m.NOT_IN_GROUP);
+            p.sendMessage(msg("notInGroup"));
         } else if (!d.isLeader(p)) {
-            p.sendMessage(m.NOT_LEADER);
+            p.sendMessage(msg("notLeader"));
         } else {
             Player invite = Bukkit.getPlayer(args[0]);
             if(invite == null) {
-                p.sendMessage(m.COULDNT_FIND_PLAYER);
+                p.sendMessage(msg("cantFindPlayer"));
             } else {
                 d.addInvite(invite, group);
-                p.sendMessage(String.format(m.INVITED_PLAYER, invite.getName()));
+                p.sendMessage(msg("playerInvited", invite.getName()));
             }
         }
         return true;

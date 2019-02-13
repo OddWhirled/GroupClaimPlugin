@@ -27,6 +27,7 @@ public class DataStore {
         }
     }
 
+    //@temporary class to simulate a database
     private class SimpleChunk {
 
         private final int x;

@@ -6,7 +6,6 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import java.util.List;
 import org.bukkit.entity.Player;
 
 /**

@@ -6,10 +6,9 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
 import org.bukkit.entity.Player;
 
+import static com.oddwhirled.groupclaim.Messages.msg;
 /**
  *
  * @author Drew
@@ -23,15 +22,14 @@ public class CommandLeave extends GroupCommand {
     @Override
     public boolean run(Player p, String... args) {
         DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
         if (group == null) {
-            p.sendMessage(m.NOT_IN_GROUP);
+            p.sendMessage(msg("notInGroup"));
         } else if (d.isLeader(p)) {
-            p.sendMessage(m.LEADER_CANT_LEAVE);
+            p.sendMessage(msg("leaderCantLeave"));
         } else {
             d.leaveGroup(p);
-            p.sendMessage(String.format(m.LEFT_GROUP, d.getGroupDisplayName(group)));
+            p.sendMessage(msg("leftGroup", d.getGroupDisplayName(group)));
         }
         return true;
     }

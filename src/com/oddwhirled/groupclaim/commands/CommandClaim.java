@@ -6,9 +6,9 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
 import org.bukkit.entity.Player;
+
+import static com.oddwhirled.groupclaim.Messages.msg;
 
 /**
  *
@@ -23,16 +23,15 @@ public class CommandClaim extends GroupCommand {
     @Override
     public boolean run(Player p, String... args) {
         DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
         if(group == null) {
-            p.sendMessage(m.NOT_IN_GROUP);
+            p.sendMessage(msg("notInGroup"));
         } else {
             boolean unclaimed = d.addClaim(group, p.getLocation().getChunk());
             if(!unclaimed) {
-                p.sendMessage(m.CHUNK_ALREADY_CLAIMED);
+                p.sendMessage(msg("chunkAlreadyClaimed"));
             } else {
-                p.sendMessage(String.format(m.CLAIMED_CHUNK, d.getGroupDisplayName(group)));
+                p.sendMessage(msg("claimedChunk", d.getGroupDisplayName(group)));
             }
         }
         return true;

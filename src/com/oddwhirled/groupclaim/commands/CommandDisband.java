@@ -6,9 +6,9 @@
 package com.oddwhirled.groupclaim.commands;
 
 import com.oddwhirled.groupclaim.DataStore;
-import com.oddwhirled.groupclaim.GroupClaimPlugin;
-import com.oddwhirled.groupclaim.Messages;
 import org.bukkit.entity.Player;
+
+import static com.oddwhirled.groupclaim.Messages.msg;
 
 /**
  *
@@ -23,16 +23,15 @@ public class CommandDisband extends GroupCommand {
     @Override
     public boolean run(Player p, String... args) {
         DataStore d = DataStore.instance();
-        Messages m = GroupClaimPlugin.messages;
         String group = d.getGroup(p);
         if (group == null) {
-            p.sendMessage(m.NOT_IN_GROUP);
+            p.sendMessage(msg("notInGroup"));
         } else if (!d.isLeader(p)) {
-            p.sendMessage(m.NOT_LEADER);
+            p.sendMessage(msg("notLeader"));
         } else if (args.length < 1 || !args[0].equals("confirm")) {
-            p.sendMessage(m.CONFIRM_DISBAND);
+            p.sendMessage(msg("confirmDisband"));
         } else {
-            p.sendMessage(String.format(m.DISBANDED_GROUP, d.getGroupDisplayName(group)));
+            p.sendMessage(msg("groupDisbanded", d.getGroupDisplayName(group)));
             d.removeGroup(group);
         }
         return true;

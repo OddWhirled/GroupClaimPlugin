@@ -5,6 +5,7 @@
  */
 package com.oddwhirled.groupclaim.commands;
 
+import com.oddwhirled.groupclaim.GroupCommandExecutor;
 import java.util.List;
 import org.bukkit.entity.Player;
 

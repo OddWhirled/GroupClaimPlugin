@@ -11,14 +11,15 @@ import org.bukkit.entity.Player;
  *
  * @author Drew
  */
-public class CommandKick extends GroupCommand {
+public class CommandOwner extends GroupCommand {
 
-    public CommandKick() {
-        super("kick");
+    public CommandOwner(String name) {
+        super(name);
     }
 
     @Override
     public boolean run(Player p, String... args) {
-        return false;
+        return false; //TODO: Implement method
     }
+    
 }
