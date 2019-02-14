@@ -21,7 +21,6 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
@@ -108,11 +107,12 @@ public class ProtectionListener implements Listener {
 //    }
     @EventHandler
     public void onEntityPlace(PlayerInteractEvent e) {
-        //e.getLocation();
-        //e.getPlayer().sendMessage("You placed a " + e.getEntityType().toString());
-
+        //the player can be holding nothing in which case we don't care
         if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-            Material m = e.getItem().getType();
+            if (e.getItem() == null) {
+                return;
+            }
+            Material m = e.getMaterial();
             if (m.equals(Material.ARMOR_STAND) || m.equals(Material.END_CRYSTAL) || m.equals(Material.TNT_MINECART)) {
                 Location loc = null;
                 switch (m) {
@@ -134,7 +134,16 @@ public class ProtectionListener implements Listener {
                     e.setCancelled(true);
                 }
             }
+        } else if (e.getAction().equals(Action.PHYSICAL)) {
+            Material m = e.getClickedBlock().getType();
+            if (m.equals(Material.TURTLE_EGG) || m.equals(Material.FARMLAND)) {
+                boolean perm = BuildPermission.checkBuildPermissions(e.getClickedBlock(), e.getClickedBlock().getLocation());
+                if(!perm) {
+                    e.setCancelled(true);
+                }
+            }
         }
+
     }
 
     @EventHandler
@@ -178,8 +187,8 @@ public class ProtectionListener implements Listener {
                 || m.equals(Material.BUCKET) || m.equals(Material.TNT)
                 || m.equals(Material.BONE_MEAL) || m.equals(Material.TNT_MINECART)
                 || m.equals(Material.FIRE_CHARGE) || m.equals(Material.FLINT_AND_STEEL)
-                || m.equals(Material.CARVED_PUMPKIN) || m.equals(Material.SHULKER_BOX)
-                || m.equals(Material.WITHER_SKELETON_SKULL));
+                || m.equals(Material.CARVED_PUMPKIN) || m.equals(Material.WITHER_SKELETON_SKULL)
+                || m.toString().endsWith("SHULKER_BOX"));
     }
 
 //    @EventHandler
@@ -211,7 +220,7 @@ public class ProtectionListener implements Listener {
     public void onLightningStrike(LightningStrikeEvent e) {
         if (e.getCause().equals(LightningStrikeEvent.Cause.TRIDENT) && !e.isCancelled()) {
             Block b = e.getLightning().getLocation().getBlock();
-            if (b.getType().equals(Material.AIR)) {
+            if (b.isEmpty()) {
                 b.setType(Material.FIRE);
             }
         }
@@ -277,13 +286,6 @@ public class ProtectionListener implements Listener {
     public void onEvent(EntitySpawnEvent e) {
         if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
-        }
-    }
-
-    @EventHandler
-    public void onEvent(EntityChangeBlockEvent e) {
-        if (GroupClaimPlugin.DEBUG) {
-            Bukkit.getServer().broadcastMessage("EntityChangeBlockEvent Called");
         }
     }
 //
