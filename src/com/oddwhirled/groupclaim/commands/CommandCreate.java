@@ -31,7 +31,7 @@ public class CommandCreate extends GroupCommand {
             p.sendMessage(msg("alreadyInGroup"));
         } else {
             boolean free = d.addGroup(args[0], p);
-            if (!free) {
+            if (free) {
                 p.sendMessage(msg("groupCreated", args[0]));
             } else {
                 p.sendMessage(msg("groupAlreadyExists"));

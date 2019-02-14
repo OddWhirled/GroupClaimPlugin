@@ -24,16 +24,16 @@ public class CommandClaim extends GroupCommand {
     public boolean run(Player p, String... args) {
         DataStore d = DataStore.instance();
         String group = d.getGroup(p);
-        if(group == null) {
+        if (group == null) {
             p.sendMessage(msg("notInGroup"));
         } else {
             boolean free = d.addClaim(group, p.getLocation().getChunk());
-            if(!free) {
-                p.sendMessage(msg("chunkAlreadyClaimed"));
-            } else {
+            if (free) {
                 p.sendMessage(msg("chunkClaimed", d.getGroupDisplayName(group)));
+            } else {
+                p.sendMessage(msg("chunkAlreadyClaimed"));
             }
         }
         return true;
-    }    
+    }
 }
