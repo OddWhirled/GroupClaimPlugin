@@ -1,8 +1,0 @@
-name: GroupClaim
-version: 1.0
-main: com.oddwhirled.groupclaim.GroupClaimPlugin
-api-version: 1.13
-commands:
-    group:
-        description: Manage groups
-        usage: /group help
