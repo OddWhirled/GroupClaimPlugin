@@ -30,7 +30,6 @@ public class GroupCommandExecutor implements TabExecutor {
 
     @Override
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-        sender.sendMessage(Arrays.toString(args));
         //if the arg length is 1 then return the full set of commands available after "group"
         if (args.length == 1) {
             List<String> suggestions = new ArrayList<>();

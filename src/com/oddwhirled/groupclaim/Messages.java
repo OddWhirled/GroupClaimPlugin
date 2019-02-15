@@ -6,7 +6,6 @@
 package com.oddwhirled.groupclaim;
 
 import java.util.HashMap;
-import java.util.IllegalFormatException;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 

@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.TNTPrimed;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -39,7 +40,7 @@ import org.bukkit.event.weather.LightningStrikeEvent;
  * @author Drew
  */
 public class ProtectionListener implements Listener {
-
+    
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
         boolean perm = BuildPermission.checkBuildPermissions(e.getPlayer(), e.getBlock().getLocation());
@@ -47,7 +48,7 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent e) {
         boolean perm = BuildPermission.checkBuildPermissions(e.getPlayer(), e.getBlock().getLocation());
@@ -55,7 +56,7 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onHangingPlace(HangingPlaceEvent e) {
         boolean perm = BuildPermission.checkBuildPermissions(e.getPlayer(), e.getEntity().getLocation());
@@ -63,7 +64,7 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onHangingBreak(HangingBreakByEntityEvent e) {
         boolean perm = BuildPermission.checkBuildPermissions(e.getRemover(), e.getEntity().getLocation());
@@ -71,7 +72,7 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onItemFrameClick(PlayerInteractEntityEvent e) {
         if (e.getRightClicked().getType().equals(EntityType.ITEM_FRAME)) {
@@ -81,7 +82,7 @@ public class ProtectionListener implements Listener {
             }
         }
     }
-
+    
     @EventHandler
     public void onEntityBreak(EntityDamageByEntityEvent e) {
         //e.getDamager().sendMessage("You damaged a " + e.getEntityType().toString());
@@ -127,7 +128,7 @@ public class ProtectionListener implements Listener {
                         break;
                     default:
                         break;
-
+                    
                 }
                 boolean perm = BuildPermission.checkBuildPermissions(e.getPlayer(), loc);
                 if (!perm) {
@@ -138,14 +139,14 @@ public class ProtectionListener implements Listener {
             Material m = e.getClickedBlock().getType();
             if (m.equals(Material.TURTLE_EGG) || m.equals(Material.FARMLAND)) {
                 boolean perm = BuildPermission.checkBuildPermissions(e.getClickedBlock(), e.getClickedBlock().getLocation());
-                if(!perm) {
+                if (!perm) {
                     e.setCancelled(true);
                 }
             }
         }
-
+        
     }
-
+    
     @EventHandler
     public void onSpread(BlockSpreadEvent e) {
         boolean perm = BuildPermission.checkBuildPermissions(e.getSource(), e.getBlock().getLocation());
@@ -153,7 +154,7 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onFlow(BlockFromToEvent e) {
         boolean perm = BuildPermission.checkBuildPermissions(e.getBlock(), e.getToBlock().getLocation());
@@ -161,25 +162,25 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onDispense(BlockDispenseEvent e) {
         Material m = e.getItem().getType();
         if (checkDispenserItem(m)) {
-
+            
             Block b = e.getBlock();
             org.bukkit.block.data.type.Dispenser d = (org.bukkit.block.data.type.Dispenser) b.getBlockData();
             BlockFace bf = d.getFacing();
             Location loc = b.getRelative(bf).getLocation();
-
+            
             boolean perm = BuildPermission.checkBuildPermissions(b, loc);
             if (!perm) {
                 e.setCancelled(true);
             }
         }
-
+        
     }
-
+    
     private boolean checkDispenserItem(Material m) {
         return (m.equals(Material.WATER_BUCKET) || m.equals(Material.LAVA_BUCKET)
                 || m.equals(Material.COD_BUCKET) || m.equals(Material.SALMON_BUCKET)
@@ -215,7 +216,7 @@ public class ProtectionListener implements Listener {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onLightningStrike(LightningStrikeEvent e) {
         if (e.getCause().equals(LightningStrikeEvent.Cause.TRIDENT) && !e.isCancelled()) {
@@ -225,7 +226,7 @@ public class ProtectionListener implements Listener {
             }
         }
     }
-
+    
     @EventHandler
     public void onEntityExplosion(EntityExplodeEvent e) {
         if (GroupClaimPlugin.DEBUG) {
@@ -242,25 +243,25 @@ public class ProtectionListener implements Listener {
             }
         }
     }
-
+    
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent e) {
         //Don't get the block clicked but rather the block relative to it
         //This will be the liquid block
         BlockFace bf = e.getBlockFace();
         Location loc = e.getBlockClicked().getRelative(bf).getLocation();
-
+        
         boolean perm = BuildPermission.checkBuildPermissions(e.getPlayer(), loc);
         if (!perm) {
             e.setCancelled(true);
         }
     }
-
+    
     @EventHandler
     public void onBucketEmpty(PlayerBucketEmptyEvent e) {
         BlockFace bf = e.getBlockFace();
         Location loc = e.getBlockClicked().getRelative(bf).getLocation();
-
+        
         boolean perm = BuildPermission.checkBuildPermissions(e.getPlayer(), loc);
         if (!perm) {
             e.setCancelled(true);
@@ -274,18 +275,27 @@ public class ProtectionListener implements Listener {
             Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
         }
     }
-
+    
     @EventHandler
     public void onEvent(ExplosionPrimeEvent e) {
         if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
         }
     }
-
+    
     @EventHandler
     public void onEvent(EntitySpawnEvent e) {
         if (GroupClaimPlugin.DEBUG) {
             Bukkit.getServer().broadcastMessage("Event triggered: " + e.toString());
+            Bukkit.getServer().broadcastMessage(String.valueOf(e.getEntity()));
+        }
+        if (e.getEntityType().equals(EntityType.PRIMED_TNT)) {
+            if (e.getEntity() instanceof TNTPrimed) {
+                Bukkit.getServer().broadcastMessage("we sit on a throne of lies");
+                TNTPrimed t = (TNTPrimed)e.getEntity();
+                t.getSource();
+            }
+            Bukkit.getServer().broadcastMessage("primed tnt spawned. class: " + e.getEntity().getClass().getName());
         }
     }
 //
