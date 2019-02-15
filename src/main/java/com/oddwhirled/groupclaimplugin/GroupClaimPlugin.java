@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.oddwhirled.groupclaim;
+package com.oddwhirled.groupclaimplugin;
 
 import com.oddwhirled.groupclaimplugin.commands.CommandCreate;
 import com.oddwhirled.groupclaimplugin.commands.CommandChunkInfo;

@@ -5,7 +5,7 @@
  */
 package com.oddwhirled.groupclaimplugin.commands;
 
-import com.oddwhirled.groupclaim.DataStore;
+import com.oddwhirled.groupclaimplugin.DataStore;
 import org.bukkit.entity.Player;
 
 /**

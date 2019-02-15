@@ -5,10 +5,10 @@
  */
 package com.oddwhirled.groupclaimplugin.commands;
 
-import com.oddwhirled.groupclaim.DataStore;
+import com.oddwhirled.groupclaimplugin.DataStore;
 import org.bukkit.entity.Player;
 
-import static com.oddwhirled.groupclaim.Messages.msg;
+import static com.oddwhirled.groupclaimplugin.Messages.msg;
 /**
  *
  * @author Drew
