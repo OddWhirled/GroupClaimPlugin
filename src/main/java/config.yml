@@ -1,3 +1,5 @@
+# False to use a yml save file
+useSQL: false
 #If a string has a % variable in it, it is very important to keep it in the string
 # however you may move it around as you like.
 messages:

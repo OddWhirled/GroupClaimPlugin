@@ -5,8 +5,6 @@
  */
 package com.oddwhirled.groupclaimplugin;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.UUID;
 import org.bukkit.Chunk;
@@ -17,8 +15,8 @@ import org.bukkit.entity.Player;
  *
  * @author Drew
  */
-public class DataStore {
-//FIXME completely busted class
+public class TempDataStore {
+
     private class GroupInfo {
 
         private final String displayName;
@@ -42,7 +40,7 @@ public class DataStore {
         }
     }
 
-    private static DataStore instance;
+    private static TempDataStore instance;
 
     //chunks recently tried to edit cached for fast lookup
     private HashMap<Chunk, String> chunkCache = new HashMap<>();
@@ -54,14 +52,14 @@ public class DataStore {
 
     private HashMap<Player, String> pendingInvites = new HashMap<>();
 
-    public static DataStore instance() {
+    public static TempDataStore instance() {
         if (instance == null) {
-            instance = new DataStore();
+            instance = new TempDataStore();
         }
         return instance;
     }
 
-    private DataStore() {
+    private TempDataStore() {
     }
 
     /**
@@ -292,39 +290,39 @@ public class DataStore {
     *   
      */
 //<editor-fold defaultstate="collapsed" desc="save and load methods done">
-    
-    private File playerFile = new File(GroupClaimPlugin.instance().getDataFolder(), "players.yml");
-    private YamlConfiguration playerYml = YamlConfiguration.loadConfiguration(playerFile);
-    private File chunkFile = new File(GroupClaimPlugin.instance().getDataFolder(), "chunks.yml");
-    private YamlConfiguration chunkYml = YamlConfiguration.loadConfiguration(chunkFile);
-    private File groupInfoFile = new File(GroupClaimPlugin.instance().getDataFolder(), "groups.yml");
-    private YamlConfiguration groupInfoYml = YamlConfiguration.loadConfiguration(groupInfoFile);
+    //TEMPORARY MAPS TO SIMULATE FILE STORAGE
+    private HashMap<SimpleChunk, String> chunkSave = new HashMap<>();
+    private HashMap<UUID, String> playerSave = new HashMap<>();
+    private HashMap<String, GroupInfo> groupSave = new HashMap<>();
 
     //load
     private String fileGetChunkGroup(int x, int z) {
-        return chunkYml.getString(x + "-" + z);
+        for (SimpleChunk sc : chunkSave.keySet()) {
+            if (sc.x == x && sc.z == z) {
+                return chunkSave.get(sc);
+            }
+        }
+        return null;
     }
 
     private GroupInfo fileGetGroupInfo(String name) {
-        String uuidStr = groupInfoYml.getString(name + ".leader");
-        String displayName = groupInfoYml.getString(name + ".display");
-        return new GroupInfo(displayName, UUID.fromString(uuidStr));
-        
+        return groupSave.get(name);
     }
 
     private String fileGetPlayerGroup(UUID uuid) {
-        return playerYml.getString(uuid.toString());
+        return playerSave.get(uuid);
     }
 
     //save
     private void fileUpdateChunkGroup(Chunk c, String group) {
-        String chunkName = c.getX() + "-" + c.getZ();
-        chunkYml.set(chunkName, group);
-        try {
-            chunkYml.save(chunkFile);
-        } catch (IOException ex) {
-            
+        if (group != null) {
+            group = group.toLowerCase();
+        } else {
+            fileRemoveChunk(c);
+            return;
         }
+        SimpleChunk sc = new SimpleChunk(c.getX(), c.getZ());
+        chunkSave.put(sc, group);
     }
 
     private void fileRemoveChunk(Chunk c) {
@@ -359,11 +357,23 @@ public class DataStore {
     }
 
     private void fileUpdatePlayerGroup(Player p, String group) {
-        yml.set(p.getUniqueId().toString(), group);
+        if (group != null) {
+            group = group.toLowerCase();
+        } else {
+            fileRemovePlayer(p);
+            return;
+        }
+        UUID uuid = p.getUniqueId();
+        playerSave.put(uuid, group);
     }
 
     private void fileRemovePlayer(Player p) {
-        yml.set(p.getUniqueId().toString(), null);
+        UUID uuid = p.getUniqueId();
+        for (UUID u : playerSave.keySet()) {
+            if (uuid.equals(u)) {
+                playerSave.remove(u);
+            }
+        }
     }
 //</editor-fold>
 }

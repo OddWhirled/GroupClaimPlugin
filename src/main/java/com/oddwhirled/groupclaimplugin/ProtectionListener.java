@@ -294,6 +294,7 @@ public class ProtectionListener implements Listener {
                 Bukkit.getServer().broadcastMessage("we sit on a throne of lies");
                 TNTPrimed t = (TNTPrimed)e.getEntity();
                 t.getSource();
+                t.getOrigin();
             }
             Bukkit.getServer().broadcastMessage("primed tnt spawned. class: " + e.getEntity().getClass().getName());
         }
