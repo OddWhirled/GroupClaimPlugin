@@ -5,6 +5,7 @@
  */
 package com.oddwhirled.groupclaimplugin;
 
+import com.oddwhirled.groupclaimplugin.storage.DataStore;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -84,9 +85,6 @@ public class BuildPermission {
             //TODO: check if source is null and see where this came from using metadata
         }
 
-//        if (et.equals(EntityType.MINECART_TNT) || et.equals(EntityType.ENDER_CRYSTAL)) {
-//            return BuildPermission.getGroup(e.getLocation());
-//        }
         return BuildPermission.determineGroup(e.getLocation());
     }
 }

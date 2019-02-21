@@ -5,12 +5,7 @@
  */
 package com.oddwhirled.groupclaimplugin;
 
-import com.oddwhirled.groupclaimplugin.commands.CommandCreate;
-import com.oddwhirled.groupclaimplugin.commands.CommandChunkInfo;
-import com.oddwhirled.groupclaimplugin.commands.CommandLeave;
-import com.oddwhirled.groupclaimplugin.commands.CommandDisband;
-import com.oddwhirled.groupclaimplugin.commands.CommandClaim;
-import com.oddwhirled.groupclaimplugin.commands.CommandInfo;
+import com.oddwhirled.groupclaimplugin.commands.*;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 

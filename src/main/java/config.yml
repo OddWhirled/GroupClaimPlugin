@@ -1,5 +1,11 @@
-# False to use a yml save file
-useSQL: false
+# False to use a flatfile sqlite save file
+mysql:
+    enabled: true
+    host: localhost
+    username: test
+    password: test
+    database: test
+    testmode: true
 #If a string has a % variable in it, it is very important to keep it in the string
 # however you may move it around as you like.
 messages:

@@ -3,66 +3,58 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.oddwhirled.groupclaimplugin;
+package com.oddwhirled.groupclaimplugin.storage;
 
-import java.io.File;
-import java.io.IOException;
+import com.oddwhirled.groupclaimplugin.GroupClaimPlugin;
 import java.util.HashMap;
 import java.util.UUID;
 import org.bukkit.Chunk;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 /**
  *
  * @author Drew
  */
-public class DataStore {
-//FIXME completely busted class
-    private class GroupInfo {
+public abstract class DataStore {
 
-        private final String displayName;
-        private UUID leader;
+    protected class GroupInfo {
 
-        private GroupInfo(String name, UUID l) {
+        protected final String displayName;
+        protected UUID leader;
+
+        protected GroupInfo(String name, UUID l) {
             displayName = name;
             leader = l;
         }
     }
 
-    //@temporary class to simulate a database
-    private class SimpleChunk {
+    private static final DataStore instance;
 
-        private final int x;
-        private final int z;
-
-        private SimpleChunk(int x, int z) {
-            this.x = x;
-            this.z = z;
+    static {
+        boolean enabled = GroupClaimPlugin.instance().getConfig().getBoolean("mysql.enabled");
+        boolean testing = GroupClaimPlugin.instance().getConfig().getBoolean("mysql.testmode");
+        if (testing) {
+            instance = new TempDataStore();
+        } else if (enabled) {
+            instance = new MySQLDataStore();
+        } else {
+            instance = new SQLiteDataStore();
         }
     }
 
-    private static DataStore instance;
-
-    //chunks recently tried to edit cached for fast lookup
-    private HashMap<Chunk, String> chunkCache = new HashMap<>();
-    //players online cached for fast lookup
-    private HashMap<Player, String> playerCache = new HashMap<>();
-    //groups online cached for fast lookup
-    private HashMap<String, GroupInfo> groupInfoCache = new HashMap<>();
-    //*if any of these are edited we still want to save in storage
-
-    private HashMap<Player, String> pendingInvites = new HashMap<>();
-
     public static DataStore instance() {
-        if (instance == null) {
-            instance = new DataStore();
-        }
         return instance;
     }
 
-    private DataStore() {
-    }
+    //chunks recently tried to edit cached for fast lookup
+    protected final HashMap<Chunk, String> chunkCache = new HashMap<>();
+    //players online cached for fast lookup
+    protected final HashMap<Player, String> playerCache = new HashMap<>();
+    //groups online cached for fast lookup
+    protected final HashMap<String, GroupInfo> groupInfoCache = new HashMap<>();
+    //*if any of these are edited we still want to save in storage
+
+    protected HashMap<Player, String> pendingInvites = new HashMap<>();
 
     /**
      *
@@ -208,7 +200,7 @@ public class DataStore {
 
     public String getGroup(Chunk chunk) {
         if (!chunkCache.containsKey(chunk)) {
-            chunkCache.put(chunk, fileGetChunkGroup(chunk.getX(), chunk.getZ()));
+            chunkCache.put(chunk, fileGetChunkGroup(chunk));
         }
         return chunkCache.get(chunk);
     }
@@ -291,79 +283,23 @@ public class DataStore {
     * Save and Load methods
     *   
      */
-//<editor-fold defaultstate="collapsed" desc="save and load methods done">
-    
-    private File playerFile = new File(GroupClaimPlugin.instance().getDataFolder(), "players.yml");
-    private YamlConfiguration playerYml = YamlConfiguration.loadConfiguration(playerFile);
-    private File chunkFile = new File(GroupClaimPlugin.instance().getDataFolder(), "chunks.yml");
-    private YamlConfiguration chunkYml = YamlConfiguration.loadConfiguration(chunkFile);
-    private File groupInfoFile = new File(GroupClaimPlugin.instance().getDataFolder(), "groups.yml");
-    private YamlConfiguration groupInfoYml = YamlConfiguration.loadConfiguration(groupInfoFile);
-
     //load
-    private String fileGetChunkGroup(int x, int z) {
-        return chunkYml.getString(x + "-" + z);
-    }
+    protected abstract String fileGetChunkGroup(Chunk c);
 
-    private GroupInfo fileGetGroupInfo(String name) {
-        String uuidStr = groupInfoYml.getString(name + ".leader");
-        String displayName = groupInfoYml.getString(name + ".display");
-        return new GroupInfo(displayName, UUID.fromString(uuidStr));
-        
-    }
+    protected abstract GroupInfo fileGetGroupInfo(String name);
 
-    private String fileGetPlayerGroup(UUID uuid) {
-        return playerYml.getString(uuid.toString());
-    }
+    protected abstract String fileGetPlayerGroup(UUID uuid);
 
     //save
-    private void fileUpdateChunkGroup(Chunk c, String group) {
-        String chunkName = c.getX() + "-" + c.getZ();
-        chunkYml.set(chunkName, group);
-        try {
-            chunkYml.save(chunkFile);
-        } catch (IOException ex) {
-            
-        }
-    }
+    protected abstract void fileUpdateChunkGroup(Chunk c, String group);
 
-    private void fileRemoveChunk(Chunk c) {
-        int x = c.getX();
-        int z = c.getZ();
-        for (SimpleChunk sc : chunkSave.keySet()) {
-            if (sc.x == x && sc.z == z) {
-                chunkSave.remove(sc);
-            }
-        }
-    }
+    protected abstract void fileRemoveChunk(Chunk c);
 
-    private void fileUpdateGroupInfo(GroupInfo g, String name) {
-        if (name != null) {
-            name = name.toLowerCase();
-        } else {
-            fileRemoveGroup(name);
-            return;
-        }
-        GroupInfo sg = new GroupInfo(name, g.leader);
-        groupSave.put(name, sg);
-    }
+    protected abstract void fileUpdateGroupInfo(GroupInfo g, String name);
 
-    private void fileRemoveGroup(String group) {
-        groupSave.remove(group);
-        while (playerSave.containsValue(group)) {
-            playerSave.values().remove(group);
-        }
-        while (chunkSave.containsValue(group)) {
-            chunkSave.values().remove(group);
-        }
-    }
+    protected abstract void fileRemoveGroup(String group);
 
-    private void fileUpdatePlayerGroup(Player p, String group) {
-        yml.set(p.getUniqueId().toString(), group);
-    }
+    protected abstract void fileUpdatePlayerGroup(Player p, String group);
 
-    private void fileRemovePlayer(Player p) {
-        yml.set(p.getUniqueId().toString(), null);
-    }
-//</editor-fold>
+    protected abstract void fileRemovePlayer(Player p);
 }

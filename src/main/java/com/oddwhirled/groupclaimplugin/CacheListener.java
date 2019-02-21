@@ -5,6 +5,7 @@
  */
 package com.oddwhirled.groupclaimplugin;
 
+import com.oddwhirled.groupclaimplugin.storage.DataStore;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
