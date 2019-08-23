@@ -16,6 +16,21 @@ import org.bukkit.entity.Player;
  */
 public class TempDataStore extends DataStore {
 
+    @Override
+    protected void fileAddChunk(Chunk c, String group) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fileAddGroup(GroupInfo g, String name) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    protected void fileAddPlayer(Player p, String group) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
     /*
     This is a class to simulate storage while keeping everything in memory.
     It is meant for testing purposes only.

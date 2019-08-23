@@ -64,14 +64,13 @@ public class BuildPermission {
 
         if (e instanceof Player) {
             return BuildPermission.determineGroup((Player) e);
-        }
-
-        if (e instanceof Monster) {
+            
+        } else if (e instanceof Monster) {
             return BuildPermission.determineGroup(((Mob) e).getTarget());
-        }
-
-        if (e instanceof Projectile) {
+            
+        } else if (e instanceof Projectile) {
             ProjectileSource ps = ((Projectile) e).getShooter();
+            
             if (ps instanceof BlockProjectileSource) {
                 return BuildPermission.determineGroup(((BlockProjectileSource) ps).getBlock());
             } else {

@@ -8,7 +8,9 @@ package com.oddwhirled.groupclaimplugin;
 import com.oddwhirled.groupclaimplugin.storage.DataStore;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 /**
@@ -16,19 +18,29 @@ import org.bukkit.event.world.ChunkUnloadEvent;
  * @author Drew
  */
 public class CacheListener implements Listener {
-    
+
     private DataStore data = DataStore.instance();
-    
+
     //With this method we would only cache up to the amount of loaded chunks
     //which are already in memory anyway
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent e) {
+        
+    }
+    
+    @EventHandler
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        
+    }
+
     @EventHandler
     public void onChunkUnload(ChunkUnloadEvent e) {
         data.unCache(e.getChunk());
     }
-    
+
     @EventHandler
     public void onPlayerLeave(PlayerQuitEvent e) {
         data.unCache(e.getPlayer());
     }
-    
+
 }

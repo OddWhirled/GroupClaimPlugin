@@ -28,21 +28,21 @@ public abstract class DataStore {
         }
     }
 
-    private static final DataStore instance;
-
-    static {
-        boolean enabled = GroupClaimPlugin.instance().getConfig().getBoolean("mysql.enabled");
-        boolean testing = GroupClaimPlugin.instance().getConfig().getBoolean("mysql.testmode");
-        if (testing) {
-            instance = new TempDataStore();
-        } else if (enabled) {
-            instance = new MySQLDataStore();
-        } else {
-            instance = new SQLiteDataStore();
-        }
-    }
+    private static DataStore instance;
 
     public static DataStore instance() {
+        if (instance == null) {
+            boolean enabled = GroupClaimPlugin.instance().getConfig().getBoolean("mysql.enabled");
+            boolean testing = GroupClaimPlugin.instance().getConfig().getBoolean("mysql.testmode");
+            if (testing) {
+                instance = new TempDataStore();
+            } else if (enabled) {
+                instance = new MySQLDataStore();
+            } else {
+                instance = new SQLiteDataStore();
+            }
+            System.out.println("DataStore USING INSTANCE OF " + instance.getClass().getSimpleName());
+        }
         return instance;
     }
 
@@ -95,7 +95,7 @@ public abstract class DataStore {
             GroupInfo g = new GroupInfo(name, leader.getUniqueId());
             String group = name.toLowerCase();
             groupInfoCache.put(group, g);
-            fileUpdateGroupInfo(g, group);
+            fileAddGroup(g, group);
             return true;
         }
         return false;
@@ -150,7 +150,7 @@ public abstract class DataStore {
 
         if (getGroup(chunk) == null) {
             chunkCache.put(chunk, group);
-            fileUpdateChunkGroup(chunk, group);
+            fileAddChunk(chunk, group);
             return true;
         }
         return false;
@@ -162,7 +162,7 @@ public abstract class DataStore {
      */
     public void removeClaim(Chunk chunk) {
         chunkCache.put(chunk, null);
-        fileUpdateChunkGroup(chunk, null);
+        fileRemoveChunk(chunk);
     }
 
     /**
@@ -178,7 +178,7 @@ public abstract class DataStore {
         group = group.toLowerCase();
         if (getGroup(p) == null) {
             playerCache.put(p, group);
-            fileUpdatePlayerGroup(p, group);
+            fileAddPlayer(p, group);
             return true;
         }
         return false;
@@ -192,7 +192,7 @@ public abstract class DataStore {
     public boolean leaveGroup(Player p) {
         if (!isLeader(p)) {
             playerCache.put(p, null);
-            fileUpdatePlayerGroup(p, null);
+            fileRemovePlayer(p);
             return true;
         }
         return false;
@@ -291,15 +291,21 @@ public abstract class DataStore {
     protected abstract String fileGetPlayerGroup(UUID uuid);
 
     //save
+    protected abstract void fileAddChunk(Chunk c, String group);
+    
+    protected abstract void fileAddGroup(GroupInfo g, String name);
+    
+    protected abstract void fileAddPlayer(Player p, String group);
+    
     protected abstract void fileUpdateChunkGroup(Chunk c, String group);
-
-    protected abstract void fileRemoveChunk(Chunk c);
 
     protected abstract void fileUpdateGroupInfo(GroupInfo g, String name);
 
-    protected abstract void fileRemoveGroup(String group);
-
     protected abstract void fileUpdatePlayerGroup(Player p, String group);
+
+    protected abstract void fileRemoveChunk(Chunk c);
+
+    protected abstract void fileRemoveGroup(String group);
 
     protected abstract void fileRemovePlayer(Player p);
 }

@@ -144,7 +144,6 @@ public class ProtectionListener implements Listener {
                 }
             }
         }
-        
     }
     
     @EventHandler

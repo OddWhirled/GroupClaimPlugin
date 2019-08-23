@@ -1,11 +1,12 @@
 # False to use a flatfile sqlite save file
 mysql:
     enabled: true
-    host: localhost
-    username: test
-    password: test
-    database: test
-    testmode: true
+    host: "67.20.55.73"
+    port: "3306"
+    username: "apexMC64060"
+    password: "0eb7305076"
+    database: "apexMC64060"
+    testmode: false
 #If a string has a % variable in it, it is very important to keep it in the string
 # however you may move it around as you like.
 messages:
